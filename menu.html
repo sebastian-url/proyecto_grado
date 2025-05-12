@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Menú - AvenaCorp</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      background-color: #f9f9f9;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 250px;
+      right: 0;
+      background-color: #a9845c;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #d3b18c;
+      padding-top: 80px;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .sidebar button, .sidebar a {
+      width: 180px;
+      padding: 12px;
+      background-color: #a9845c;
+      border: none;
+      color: white;
+      font-size: 16px;
+      border-radius: 5px;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .sidebar button:hover, .sidebar a:hover {
+      background-color: #8b6b44;
+    }
+
+    .saludo {
+      font-size: 18px;
+    }
+
+    .cerrar-sesion {
+      background-color: #8b6b44;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .cerrar-sesion:hover {
+      background-color: #6d5232;
+    }
+
+    .contenedor-productos {
+      margin-top: 80px;
+      margin-left: 250px;
+      padding: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .producto {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 250px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .producto img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 5px;
+      background-color: #e0e0e0;
+    }
+
+    .producto .precio {
+      font-size: 18px;
+      color: #6b4f1d;
+      margin: 10px 0;
+    }
+
+    .producto .cantidad {
+      margin: 5px 0;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .producto button {
+      background-color: #a9845c;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .producto button:hover {
+      background-color: #8b6b44;
+    }
+
+    .producto svg {
+      width: 18px;
+      height: 18px;
+      fill: white;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <button onclick="history.back()">⮐ Reversar</button>
+    <a href="buscar.html">🔍 Buscar pedido</a>
+    <a href="historial.html">🕘 Historial</a>
+  </div>
+
+  <header>
+    <div class="saludo">Hola, <span id="nombreUsuario">Usuario</span></div>
+    <button class="cerrar-sesion" onclick="cerrarSesion()">Cerrar sesión</button>
+  </header>
+
+  <div class="contenedor-productos">
+
+
+    <div class="producto"><img src="" alt="Producto 1"><div class="precio">$10,500</div><div class="cantidad">Cantidad disponible: 11</div><button><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 4h-2l-3 9v2h2a3 3 0 1 0 6 0h4a3 3 0 1 0 6 0h2v-2l-3-9h-2v2h1.6l2.4 7H4.4l2.4-7H8V4zm1 15a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm10 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>Comprar</button></div>
+
+    <div class="producto"><img src="" alt="Producto 2"><div class="precio">$11,000</div><div class="cantidad">Cantidad disponible: 12</div><button><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="..."/></svg>Comprar</button></div>
+
+    <div class="producto"><img src="" alt="Producto 3"><div class="precio">$11,500</div><div class="cantidad">Cantidad disponible: 13</div><button><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="..."/></svg>Comprar</button></div>
+
+    <div class="producto"><img src="" alt="Producto 1"><div class="precio">$10,500</div><div class="cantidad">Cantidad disponible: 11</div><button><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 4h-2l-3 9v2h2a3 3 0 1 0 6 0h4a3 3 0 1 0 6 0h2v-2l-3-9h-2v2h1.6l2.4 7H4.4l2.4-7H8V4zm1 15a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm10 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>Comprar</button></div>
+
+    <div class="producto"><img src="" alt="Producto 1"><div class="precio">$10,500</div><div class="cantidad">Cantidad disponible: 11</div><button><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 4h-2l-3 9v2h2a3 3 0 1 0 6 0h4a3 3 0 1 0 6 0h2v-2l-3-9h-2v2h1.6l2.4 7H4.4l2.4-7H8V4zm1 15a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm10 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>Comprar</button></div>
+
+    <div class="producto"><img src="" alt="Producto 1"><div class="precio">$10,500</div><div class="cantidad">Cantidad disponible: 11</div><button><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 4h-2l-3 9v2h2a3 3 0 1 0 6 0h4a3 3 0 1 0 6 0h2v-2l-3-9h-2v2h1.6l2.4 7H4.4l2.4-7H8V4zm1 15a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm10 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>Comprar</button></div>
+
+    <div class="producto"><img src="" alt="Producto 1"><div class="precio">$10,500</div><div class="cantidad">Cantidad disponible: 11</div><button><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 4h-2l-3 9v2h2a3 3 0 1 0 6 0h4a3 3 0 1 0 6 0h2v-2l-3-9h-2v2h1.6l2.4 7H4.4l2.4-7H8V4zm1 15a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm10 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>Comprar</button></div>
+
+    <div class="producto"><img src="" alt="Producto 1"><div class="precio">$10,500</div><div class="cantidad">Cantidad disponible: 11</div><button><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 4h-2l-3 9v2h2a3 3 0 1 0 6 0h4a3 3 0 1 0 6 0h2v-2l-3-9h-2v2h1.6l2.4 7H4.4l2.4-7H8V4zm1 15a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm10 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>Comprar</button></div>
+
+  </div>
+
+  <script>
+    const nombreGuardado = localStorage.getItem('nombre') || 'Usuario';
+    document.getElementById('nombreUsuario').textContent = nombreGuardado;
+
+    function cerrarSesion() {
+      localStorage.clear();
+      window.location.href = 'login.html';
+    }
+  </script>
+
+</body>
+</html>z
