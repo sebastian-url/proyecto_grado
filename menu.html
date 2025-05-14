@@ -73,8 +73,80 @@
       background-color: #6d5232;
     }
 
-    .contenedor-productos {
+    /* Carrusel con efecto slide */
+    .carrusel {
+      margin-left: 250px;
       margin-top: 80px;
+      width: calc(100% - 250px);
+      height: 300px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .carrusel-inner {
+      display: flex;
+      width: 300%;
+      height: 100%;
+      transition: transform 0.5s ease-in-out;
+    }
+
+    .carrusel-imagen {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .boton-carrusel {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(0, 0, 0, 0.4);
+      color: white;
+      border: none;
+      font-size: 24px;
+      padding: 10px;
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    .boton-carrusel:hover {
+      background-color: rgba(0, 0, 0, 0.6);
+    }
+
+    .boton-izquierda {
+      left: 10px;
+    }
+
+    .boton-derecha {
+      right: 10px;
+    }
+
+    .indicadores {
+      position: absolute;
+      bottom: 10px;
+      width: 100%;
+      text-align: center;
+      z-index: 3;
+    }
+
+    .indicadores span {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      margin: 0 5px;
+      background-color: rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .indicadores span.activo {
+      background-color: white;
+    }
+
+    .contenedor-productos {
+      margin-top: 420px;
       margin-left: 250px;
       padding: 30px;
       display: flex;
@@ -149,25 +221,30 @@
     <button class="cerrar-sesion" onclick="cerrarSesion()">Cerrar sesión</button>
   </header>
 
+  <!-- Carrusel con slide -->
+  <div class="carrusel">
+    <div class="carrusel-inner" id="carruselInner">
+      <img class="carrusel-imagen" src="carru.jpg" alt="Imagen 1">
+      <img class="carrusel-imagen" src="carrusel.jpg" alt="Imagen 2">
+      <img class="carrusel-imagen" src="carru3.webp" alt="Imagen 3">
+    </div>
+    <button class="boton-carrusel boton-izquierda" onclick="moverCarrusel(-1)">❮</button>
+    <button class="boton-carrusel boton-derecha" onclick="moverCarrusel(1)">❯</button>
+    <div class="indicadores">
+      <span onclick="irACarrusel(0)" class="activo"></span>
+      <span onclick="irACarrusel(1)"></span>
+      <span onclick="irACarrusel(2)"></span>
+    </div>
+  </div>
+
   <div class="contenedor-productos">
-
-
     <div class="producto"><img src="" alt="Producto 1"><div class="precio">$10,500</div><div class="cantidad">Cantidad disponible: 11</div><button><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 4h-2l-3 9v2h2a3 3 0 1 0 6 0h4a3 3 0 1 0 6 0h2v-2l-3-9h-2v2h1.6l2.4 7H4.4l2.4-7H8V4zm1 15a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm10 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>Comprar</button></div>
-
-    <div class="producto"><img src="" alt="Producto 2"><div class="precio">$11,000</div><div class="cantidad">Cantidad disponible: 12</div><button><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="..."/></svg>Comprar</button></div>
-
-    <div class="producto"><img src="" alt="Producto 3"><div class="precio">$11,500</div><div class="cantidad">Cantidad disponible: 13</div><button><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="..."/></svg>Comprar</button></div>
-
     <div class="producto"><img src="" alt="Producto 1"><div class="precio">$10,500</div><div class="cantidad">Cantidad disponible: 11</div><button><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 4h-2l-3 9v2h2a3 3 0 1 0 6 0h4a3 3 0 1 0 6 0h2v-2l-3-9h-2v2h1.6l2.4 7H4.4l2.4-7H8V4zm1 15a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm10 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>Comprar</button></div>
-
     <div class="producto"><img src="" alt="Producto 1"><div class="precio">$10,500</div><div class="cantidad">Cantidad disponible: 11</div><button><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 4h-2l-3 9v2h2a3 3 0 1 0 6 0h4a3 3 0 1 0 6 0h2v-2l-3-9h-2v2h1.6l2.4 7H4.4l2.4-7H8V4zm1 15a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm10 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>Comprar</button></div>
-
     <div class="producto"><img src="" alt="Producto 1"><div class="precio">$10,500</div><div class="cantidad">Cantidad disponible: 11</div><button><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 4h-2l-3 9v2h2a3 3 0 1 0 6 0h4a3 3 0 1 0 6 0h2v-2l-3-9h-2v2h1.6l2.4 7H4.4l2.4-7H8V4zm1 15a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm10 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>Comprar</button></div>
-
     <div class="producto"><img src="" alt="Producto 1"><div class="precio">$10,500</div><div class="cantidad">Cantidad disponible: 11</div><button><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 4h-2l-3 9v2h2a3 3 0 1 0 6 0h4a3 3 0 1 0 6 0h2v-2l-3-9h-2v2h1.6l2.4 7H4.4l2.4-7H8V4zm1 15a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm10 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>Comprar</button></div>
-
     <div class="producto"><img src="" alt="Producto 1"><div class="precio">$10,500</div><div class="cantidad">Cantidad disponible: 11</div><button><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 4h-2l-3 9v2h2a3 3 0 1 0 6 0h4a3 3 0 1 0 6 0h2v-2l-3-9h-2v2h1.6l2.4 7H4.4l2.4-7H8V4zm1 15a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm10 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/></svg>Comprar</button></div>
-
+    
   </div>
 
   <script>
@@ -178,7 +255,39 @@
       localStorage.clear();
       window.location.href = 'login.html';
     }
+
+    let indiceActual = 0;
+    const carruselInner = document.getElementById('carruselInner');
+    const totalImagenes = carruselInner.children.length;
+    const puntos = document.querySelectorAll('.indicadores span');
+    let intervalo = setInterval(cambiarSlide, 3000);
+
+    function cambiarSlide() {
+      indiceActual = (indiceActual + 1) % totalImagenes;
+      actualizarCarrusel();
+    }
+
+    function moverCarrusel(direccion) {
+      clearInterval(intervalo);
+      indiceActual = (indiceActual + direccion + totalImagenes) % totalImagenes;
+      actualizarCarrusel();
+      intervalo = setInterval(cambiarSlide, 3000);
+    }
+
+    function irACarrusel(indice) {
+      clearInterval(intervalo);
+      indiceActual = indice;
+      actualizarCarrusel();
+      intervalo = setInterval(cambiarSlide, 3000);
+    }
+
+    function actualizarCarrusel() {
+      carruselInner.style.transform = `translateX(-${indiceActual * 100}%)`;
+      puntos.forEach((punto, i) => {
+        punto.classList.toggle('activo', i === indiceActual);
+      });
+    }
   </script>
 
 </body>
-</html>z
+</html>
