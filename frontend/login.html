@@ -73,6 +73,27 @@
     }
   </style>
 </head>
+<script>
+document.getElementById("loginForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const correo = document.getElementById("correo").value;
+    const contrasena = document.getElementById("contrasena").value;
+
+    const res = await fetch("/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ correo, contrasena })
+    });
+
+    const data = await res.json();
+    alert(data.mensaje);
+
+    if (res.ok) {
+        window.location.href = "menu.html"; // o la página que desees mostrar después del login
+    }
+});
+</script>
 <body>
   <div class="login-box">
     <h2>Iniciar Sesión</h2>
