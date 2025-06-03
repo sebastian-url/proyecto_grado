@@ -1,5 +1,6 @@
-from flask_sqlalchemy import SQLALchemy
+from flask_sqlalchemy import SQLAlchemy
 
-DATABASE_URL = "mysql+pymysql://root:@localhost:3306/pro" \
+DATABASE_URL = "mysql+pymysql://root:@localhost:3306/proyecto"
 
-db = SQLALchemy()
+
+db = SQLAlchemy()

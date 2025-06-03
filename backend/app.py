@@ -1,13 +1,16 @@
+from flask import Flask, jsonify, send_from_directory
+from flask_cors import CORS
+import os
 import sqlite3
 
+# --- Configuración de base de datos SQLite manual ---
 class ProyectoDB:
     def __init__(self, db_name="proyecto.db"):
-        self.conn = sqlite3.connect(db_name)
+        self.conn = sqlite3.connect(db_name, check_same_thread=False)
         self.create_tables()
 
     def create_tables(self):
         cursor = self.conn.cursor()
-        # Crear tablas
         cursor.executescript("""
         CREATE TABLE IF NOT EXISTS rol (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -16,77 +19,36 @@ class ProyectoDB:
 
         CREATE TABLE IF NOT EXISTS usuarios (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nombre TEXT,   
-            apellido TEXT,
-            celular TEXT,
-            correo TEXT,
-            contrasena TEXT,
-            rol_id INTEGER DEFAULT 2,
+            nombre TEXT NOT NULL,
+            email TEXT UNIQUE NOT NULL,
+            rol_id INTEGER,
             FOREIGN KEY (rol_id) REFERENCES rol(id)
         );
-
-        CREATE TABLE IF NOT EXISTS compra (
-            cantidad INTEGER NOT NULL,
-            nombre TEXT NOT NULL,
-            apellido TEXT NOT NULL,
-            celular INTEGER NOT NULL
-        );
         """)
         self.conn.commit()
 
-    def registrar_usuario(self, nombre, apellido, celular, correo, contrasena, rol_id=2):
-        cursor = self.conn.cursor()
-        cursor.execute("""
-            INSERT INTO usuarios (nombre, apellido, celular, correo, contrasena, rol_id)
-            VALUES (?, ?, ?,   ?, ?, ?)
-        """, (nombre, apellido, celular, correo, contrasena, rol_id))
-        self.conn.commit()
+# Inicializa base de datos
+db = ProyectoDB()
 
-    def registrar_compra(self, cantidad, nombre, apellido, celular):
-        cursor = self.conn.cursor()
-        cursor.execute("""
-            INSERT INTO compra (cantidad, nombre, apellido, celular)
-            VALUES (?, ?, ?, ?)
-        """, (cantidad, nombre, apellido, celular))
-        self.conn.commit()
+# --- Configurar la app de Flask ---
+app = Flask(__name__, static_folder="../frontend", static_url_path="/")
+CORS(app)  # Permite solicitudes desde el frontend
 
-    def obtener_usuarios(self):
-        cursor = self.conn.cursor()
-        cursor.execute("""
-            SELECT u.id, u.nombre, u.apellido, u.correo, r.nombre_rol
-            FROM usuarios u
-            JOIN rol r ON u.rol_id = r.id
-        """)
-        return cursor.fetchall()
+# Ruta API de prueba
+@app.route("/api/saludo")
+def saludo():
+    return jsonify({"mensaje": "Hola desde Flask con backend unificado"})
 
-    def obtener_compras(self):
-        cursor = self.conn.cursor()
-        cursor.execute("SELECT * FROM compra")
-        return cursor.fetchall()
+# Servir frontend (index.html u otro)
+@app.route("/")
+def index():
+    return send_from_directory(app.static_folder, "index.html")
 
-    def informe_compras_usuarios(self):
-        cursor = self.conn.cursor()
-        cursor.execute("""
-            SELECT u.nombre, u.apellido, u.correo, c.cantidad
-            FROM usuarios u
-            JOIN compra c ON u.nombre = c.nombre AND u.apellido = c.apellido
-        """)
-        return cursor.fetchall()
+# Fallback para SPA (React/Vue/etc.)
+@app.errorhandler(404)
+def fallback(e):
+    return send_from_directory(app.static_folder, "index.html")
 
-# Ejemplo de uso
+# --- Ejecutar servidor ---
 if __name__ == "__main__":
-    db = ProyectoDB()
-    db.registrar_usuario("Juan", "Pérez", "123456789", "juan@example.com", "clave123", rol_id=2)
-    db.registrar_compra(2, "Juan", "Pérez", 123456789)
-
-    print("Usuarios:")
-    for u in db.obtener_usuarios():
-        print(u)
-
-    print("\nCompras:")
-    for c in db.obtener_compras():
-        print(c)
-
-    print("\nInforme de Compras por Usuario:")
-    for i in db.informe_compras_usuarios():
-        print(i)
+    app.run(debug=True)

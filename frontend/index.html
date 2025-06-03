@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Conexión con Flask</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 2rem;
+    }
+    #respuesta {
+      margin-top: 1rem;
+      font-weight: bold;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <h1>Frontend conectado a Flask</h1>
+  <button onclick="obtenerSaludo()">Obtener saludo</button>
+  <div id="respuesta"></div>
+
+  <script>
+    async function obtenerSaludo() {
+      try {
+        const res = await fetch("/api/saludo");
+        const data = await res.json();
+        document.getElementById("respuesta").textContent = data.mensaje;
+      } catch (err) {
+        document.getElementById("respuesta").textContent = "Error al conectar con Flask";
+      }
+    }
+  </script>
+</body>
+</html>
