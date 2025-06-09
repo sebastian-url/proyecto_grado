@@ -1,0 +1,102 @@
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-image: url(../img/fondoTodos.png);
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+
+    /* Encabezado superior */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #6b4f1d;
+      padding: 10px 20px;
+      color: white;
+      position: relative;
+      z-index: 2;
+    }
+
+    .navbar h1 {
+      margin: 0;
+    }
+
+    .menu-toggle {
+      font-size: 24px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      color: white;
+    }
+
+    .usuario {
+      font-weight: bold;
+    }
+
+    /* Menú lateral oculto */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100%;
+      background-color: #a9845c;
+      overflow: hidden;
+      padding-top: 60px;
+      transition: left 0.3s ease;
+      z-index: 3;
+    }
+
+  .sidebar a {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espacio entre ícono y texto */
+    color: white;
+    padding: 15px 20px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+  }
+
+  .sidebar svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+
+    .sidebar a:hover {
+      background-color: #8b6b44;
+    }
+
+    .sidebar.active {
+      left: 0;
+    }
+
+    /* Contenido principal */
+    .contenido {
+      padding: 20px;
+      z-index: 1;
+    }
+
+    h2 {
+      width: fit-content;
+      padding: 10px;
+      background-color: rgba(196, 194, 194, 0.8);
+      color: #4d3104;
+      border-radius: 8px;
+      margin: 0 auto;
+    }
+
+    #alerta-pedidos {
+      background-color: #fff4e5;
+      border: 1px solid #d49e3d;
+      color: #6b4f1d;
+      padding: 12px 20px;
+      margin-top: 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      width: fit-content;
+    }

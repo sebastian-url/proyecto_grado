@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/registro.css') }}">
+  <link rel="icon" href="{{ url_for('static', filename='img/icono.png') }}">
+  <title>Registro - AvenaCorp</title>
+</head>
+
+<body>
+  <div class="login-box">
+    <h2>Registro</h2>
+    <div id="respuesta"></div>
+    <form id="registroForm">
+      <input id="nombre" type="text" placeholder="Nombre" required>
+      <input id="apellido" type="text" placeholder="Apellido" required>
+      <input id="celular" type="tel" placeholder="Celular" required>
+      <input id="correo" type="email" placeholder="Correo electrónico" required>
+      <input id="contrasena" type="password" placeholder="Contraseña" required>
+      <button type="submit">Registrarse</button>
+    </form>
+    <a href="/login">¿Ya tienes una cuenta? Inicia sesión</a>
+  </div>
+  <!-- Modal de mensaje -->
+  <div id="modalMensaje" class="modal" style="display: none;">
+    <div class="modal-content">
+      <p id="textoMensaje"></p>
+    </div>
+  </div>
+</body>
+<script src="{{ url_for('static', filename='js/registro.js') }}"></script>
+</html>

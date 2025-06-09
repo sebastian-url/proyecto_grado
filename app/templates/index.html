@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+  <link rel="icon" href="{{ url_for('static', filename='img/icono.png') }}">
+  <title>Inicio de Sesión - AvenaCorp</title>
+</head>
+
+<body>
+  <div class="login-box">
+    <div id="mensaje-error" class="error" style="display: none;">
+      Debes iniciar sesión para acceder a esa página.
+    </div>
+    <h2>Iniciar Sesión</h2>
+    <div id="respuesta"></div>
+    <form id="loginForm">
+      <input id="correo" name="correo" type="text" placeholder="Usuario" required>
+      <input id="contrasena" name="contrasena" type="password" placeholder="Contraseña" required>
+      <button type="submit">Ingresar</button>
+    </form>
+    <a class="forgot-password" onclick="abrirModal()">¿Olvidaste tu contraseña?</a>
+    <a href="/registro">¿No tienes una cuenta? Regístrate</a>
+
+    <!-- Modal de mensaje -->
+    <div id="modalMensaje" class="modal" style="display: none;">
+      <div class="modal-content">
+        <p id="textoMensaje"></p>
+      </div>
+    </div>
+
+
+    <!-- Modal de confirmación -->
+    <div class="modal" id="modalRecuperar" style="display: none;">
+      <div class="modal-content">
+        <p id="mensajeModal">Recuperacion de contraseña</p>
+        <label for="correoRecuperar">Ingrese el correo:</label>
+        <input type="email" name="correoRecuperar" id="correoRecuperar" placeholder="Correo electrónico" required>
+        <div class="modal-buttons">
+          <button class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
+          <button class="btn-confirmar" onclick="recuperarContraseña()">Confirmar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+<script src="{{ url_for('static', filename='js/login.js') }}"></script>
+</html>

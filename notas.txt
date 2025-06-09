@@ -1,0 +1,13 @@
+para iniciar debe ingresar primero el siguiente comando
+
+venv\Scripts\activate
+
+luego de eso 
+
+pip install -r requirements.txt
+
+y para iniciar eso
+
+python app/app.py
+
+la bd es la que dice proyecto (1)

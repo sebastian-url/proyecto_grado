@@ -1,0 +1,120 @@
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-image: url(../img/fondoTodos.png);
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+
+    .navbar {
+      background-color: #6b4f1d;
+      padding: 15px 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 1001;
+    }
+
+    .navbar h1 {
+      margin: 0;
+      color: #ffffff;
+      font-size: 24px;
+    }
+
+    .menu-toggle {
+      font-size: 24px;
+      cursor: pointer;
+      color: #ffffff;
+      background: none;
+      border: none;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -220px;
+      width: 220px;
+      height: 100%;
+      background-color: #6b4f1d;
+      color: white;
+      padding-top: 60px;
+      transition: left 0.3s ease;
+      z-index: 1000;
+    }
+
+    .sidebar.visible {
+      left: 0;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white;
+      padding: 15px 20px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .sidebar a:hover {
+      background-color: #8b6b44;
+    }
+
+    .contenido {
+      padding: 30px 20px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .contenedor {
+      background-color: rgba(255, 255, 255, 0.95);
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    h2 {
+      color: #6b4f1d;
+      text-align: center;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #a9845c;
+      color: white;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    .estado {
+      font-weight: bold;
+    }
+
+    .procesando {
+      color: rgb(0, 60, 255);
+    }
+
+    .aceptado {
+      color: green;
+    }

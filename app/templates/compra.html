@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mis Pedidos - AvenaCorp</title>
+  <link rel="icon" href="../img/icono.png" type="image/x-icon">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/compra.css') }}"> <!-- si usas archivo externo -->
+</head>
+<body>
+
+  <div class="navbar">
+    <button class="menu-toggle" id="toggleMenu">☰</button>
+    <h1>AvenaCorp - Mis Pedidos</h1>
+  </div>
+
+  <div class="sidebar" id="sidebarMenu">
+    <a href="/catalogo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-house-icon lucide-house"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        Inicio
+    </a>
+    <a href="/compra">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-cart-icon lucide-shopping-cart"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+      Compra
+    </a>
+    <a href="/logout">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out-icon lucide-log-out"><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/></svg>
+      Cerrar sesión
+    </a>
+  </div>
+
+  <!-- Modal de mensaje -->
+  <div id="modalMensaje" class="modal" style="display: none;">
+    <div class="modal-content">
+      <p id="textoMensaje"></p>
+    </div>
+  </div>
+
+  <div class="contenido">
+    <div class="contenedor">
+      <h2>Pedidos Realizados</h2>
+      <table id="tablaPedidos">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Descripción</th>
+            <th>Precio</th>
+            <th>Cantidad</th>
+            <th>Total</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Datos dinámicos -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/compra.js') }}"></script>
+
+</body>
+</html>

@@ -1,0 +1,125 @@
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-image: url(../img/fondoTodos.png);
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #6b4f1d;
+      padding: 10px 20px;
+      color: white;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .navbar h1 {  
+      margin: 0;
+    }
+
+    .menu-toggle {
+      font-size: 24px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      color: white;
+    }
+
+    .usuario {
+      font-weight: bold;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100%;
+      background-color: #a9845c;
+      overflow: hidden;
+      padding-top: 60px;
+      transition: left 0.3s ease;
+      z-index: 3;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white;
+      padding: 15px 20px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .sidebar a:hover {
+      background-color: #8b6b44;
+    }
+
+    .sidebar svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    .sidebar.active {
+      left: 0;
+    }
+
+    .contenido {
+      padding: 20px;
+      margin-left: 0;
+    }
+
+    h2 {
+      width: fit-content;
+      padding: 10px;
+      background-color: rgba(196, 194, 194, 0.8);
+      color: #4d3104;
+      border-radius: 8px;
+      margin: 0 auto;
+    }
+
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: rgb(231, 197, 155);
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ccc;
+    }
+
+    th {
+      background-color: #a9845c;
+      color: white;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    .volver {
+      background-color: #8b6b44;
+      margin-top: 20px;
+      display: inline-block;
+      padding: 10px 20px;
+      text-decoration: none;
+      color: white;
+      border-radius: 5px;
+    }
+
+    .volver:hover {
+      background-color: #6d5232;
+    }
