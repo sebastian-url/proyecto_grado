@@ -11,9 +11,10 @@ class ModeloUsuario():
         try:
             cursor = db.connection.cursor()
             cursor.execute("SELECT * FROM usuarios WHERE correo=%s AND estado = 'activo'", (correo,))
-            return cursor.fetchone()
+            usuario = cursor.fetchone()
+            return usuario
         except Exception as e:
-            return f"Error al validar el usuario: {e}"
+            return None
     
     @classmethod
     def iniciarSesion(self,db,correo,contrasena):
@@ -63,7 +64,18 @@ class ModeloUsuario():
             
         except Exception as e:
             return f"Error al intentar modificar: {e}"
-        
+    
+    @classmethod
+    def desbloqueraUsuarios(self,db,id_usuario):
+        try: 
+            sql = 'UPDATE usuarios SET estado = "activo" WHERE id = %s'
+            cursor = db.connection.cursor()
+            cursor.execute(sql,(id_usuario,))
+            cursor.connection.commit()
+            return cursor.rowcount
+            
+        except Exception as e:
+            return f"Error al intentar modificar: {e}"
     @classmethod
     def obtenerUsuarios(self,db):
         try: 

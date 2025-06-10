@@ -378,7 +378,7 @@ def recuperar_contra():
 
     usuario_encontrado = ModeloUsuario.obtenerUsuarioPorCorreo(db,correo)
     if usuario_encontrado is None:
-        return jsonify({'error':'El correo ingresado no aceptado'})
+        return jsonify({'error':'El correo ingresado no aceptado'}), 404
     
     id_usuario = usuario_encontrado[0]
 
@@ -386,7 +386,7 @@ def recuperar_contra():
 
     contra_actualizada = ModeloUsuario.actualizar_contraseña(db,id_usuario,contraseña)
     if contra_actualizada == 0:
-        return jsonify({'error':'No se pudo cambiar la contraseña'})
+        return jsonify({'error':'No se pudo cambiar la contraseña'}) , 400
     else:
         print(contra_actualizada)
         msg = Message('Recuperación de Contraseña', recipients=[usuario_encontrado[4]])

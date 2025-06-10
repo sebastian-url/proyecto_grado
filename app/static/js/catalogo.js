@@ -59,12 +59,12 @@
 
     // Calcular y mostrar el total inicial
     const totalInput = document.getElementById('total');
-    totalInput.value = (precio * cantidadInput.value).toFixed(2);
+    totalInput.value = (precio * cantidadInput.value);
 
     // Agregar evento para actualizar el total cuando cambie la cantidad
     cantidadInput.oninput = function () {
       const nuevaCantidad = parseInt(this.value) || 0;
-      totalInput.value = (precio * nuevaCantidad).toFixed(2);
+      totalInput.value = (precio * nuevaCantidad);
     };
 
     // Mostrar el modal
