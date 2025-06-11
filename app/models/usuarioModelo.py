@@ -64,15 +64,30 @@ class ModeloUsuario():
             
         except Exception as e:
             return f"Error al intentar modificar: {e}"
-    
+        
     @classmethod
-    def desbloqueraUsuarios(self,db,id_usuario):
+    def activarUsuario(self, db, id_usuario):
         try: 
             sql = 'UPDATE usuarios SET estado = "activo" WHERE id = %s'
             cursor = db.connection.cursor()
-            cursor.execute(sql,(id_usuario,))
+            cursor.execute(sql, (id_usuario,))
             cursor.connection.commit()
             return cursor.rowcount
+        except Exception as e:
+            return f"Error al intentar activar: {e}"
+
+    
+    @classmethod
+    def eliminarUsuario(self, db, id_usuario):
+        try:
+            sql = 'UPDATE usuarios SET estado = "eliminado" WHERE id = %s'
+            cursor = db.connection.cursor()
+            cursor.execute(sql, (id_usuario,))
+            cursor.connection.commit()
+            return cursor.rowcount
+        except Exception as e:
+            return f"Error al eliminar el usuario: {e}"
+
             
         except Exception as e:
             return f"Error al intentar modificar: {e}"
@@ -141,3 +156,4 @@ class ModeloUsuario():
             return cursor.rowcount
         except Exception as e:
             return f"Error al obtener el usuario por ID: {e}"
+

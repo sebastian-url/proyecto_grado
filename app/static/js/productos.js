@@ -57,6 +57,7 @@
         });
 
         if (res.ok) {
+            formulario.reset();
             cerrarModal('modalAgregar');
             mostrarModalMensaje('Producto registrado exitosamente');
             setTimeout(() => {

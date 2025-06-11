@@ -219,6 +219,43 @@ def bloquear_usuario(id_usuario):
         return jsonify({'error': 'Error al bloquear el usuario'}), 500
     
     return jsonify({'mensaje': 'Usuario bloqueado exitosamente'})
+@app.route('/api/activar-usuario/<int:id_usuario>', methods=['PUT'])
+def activar_usuario(id_usuario):
+    if 'usuario' not in session or session['usuario']['rol'] != 1:
+        return jsonify({'error': 'Acceso denegado'}), 403
+
+    respuesta = ModeloUsuario.desbloqueraUsuarios(db, id_usuario)
+
+    if isinstance(respuesta, int) and respuesta == 0:
+        return jsonify({'error': 'Error al activar el usuario'}), 500
+
+    return jsonify({'mensaje': 'Usuario activado exitosamente'})
+
+@app.route('/api/eliminar-usuario/<int:id_usuario>', methods=['PUT'])
+def eliminar_usuario(id_usuario):
+    if 'usuario' not in session or session['usuario']['rol'] != 1:
+        return jsonify({'error': 'Acceso denegado'}), 403
+
+    respuesta = ModeloUsuario.eliminarUsuario(db, id_usuario)
+
+    if isinstance(respuesta, int) and respuesta == 0:
+        return jsonify({'error': 'Error al eliminar el usuario'}), 500
+
+    return jsonify({'mensaje': 'Usuario eliminado exitosamente'})
+
+
+
+@app.route('/api/desbloquear-usuario/<int:id_usuario>', methods=['PUT'])
+def desbloquear_usuario(id_usuario):
+    if 'usuario' not in session or session['usuario']['rol'] != 1:
+        return jsonify({'error': 'Acceso denegado'}), 403
+    
+    respuesta = ModeloUsuario.desbloqueraUsuarios(db, id_usuario)
+    
+    if isinstance(respuesta, int) and respuesta == 0:
+        return jsonify({'error': 'Error al desbloquear el usuario'}), 500
+    
+    return jsonify({'mensaje': 'Usuario desbloqueado exitosamente'})
 
 
 
