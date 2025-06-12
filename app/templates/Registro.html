@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/registro.css') }}">
   <link rel="icon" href="{{ url_for('static', filename='img/icono.png') }}">
-  <title>Registro - AvenaCorp</title>
+  <title>Registro - RicaAvena</title>
 </head>
 
 <body>
@@ -16,7 +16,7 @@
       <input id="apellido" type="text" placeholder="Apellido" required>
       <input id="celular" type="tel" placeholder="Celular" required>
       <input id="correo" type="email" placeholder="Correo electrónico" required>
-      <input id="contrasena" type="password" placeholder="Contraseña" required>
+      <input id="contrasena" type="password" placeholder="Contraseña" required minlength="8">
       <button type="submit">Registrarse</button>
     </form>
     <a href="/login">¿Ya tienes una cuenta? Inicia sesión</a>

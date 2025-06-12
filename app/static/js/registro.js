@@ -16,7 +16,12 @@
         const apellido = document.getElementById("apellido").value;
         const celular = document.getElementById("celular").value;
         const correo = document.getElementById("correo").value;
-        const contrasena = document.getElementById("contrasena").value;
+        const contrasena = document.getElementById('contrasena').value
+        if (contrasena.length < 8) {
+            alert("La contraseña debe tener al menos 8 caracteres.");
+            event.preventDefault(); // Evita que se envíe el formulario
+        }
+
 
         const res = await fetch("/registro", {
             method: "POST",

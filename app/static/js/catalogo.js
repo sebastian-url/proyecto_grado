@@ -1,3 +1,12 @@
+    window.addEventListener('DOMContentLoaded', async () => {
+      const res = await fetch('/api/usuario-logueado');
+      if (res.ok) {
+        const usuario = await res.json();
+        document.getElementById("nombre-usuario").textContent = usuario.nombre;
+      } else {
+        window.location.href = "/login";
+      }
+    });
     function mostrarModalMensaje(mensaje, esError = false) {
       const modalTexto = document.getElementById("textoMensaje");
       modalTexto.textContent = mensaje;

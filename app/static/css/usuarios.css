@@ -175,3 +175,44 @@
     .btn-confirmar:hover {
       background-color: #c82333;
     }
+
+    .filtro{
+      width: fit-content;
+      background-color: rgb(214, 213, 213);
+      padding: 5px;
+      border-radius: 10px;
+    }
+
+    .filtro-estado{
+      font-weight: bold;
+      margin-right: 10px;
+      color: #4d3104;
+      background-color: rgba(255, 248, 248, 0.7);
+      padding: 6px 10px;
+      border-radius: 6px;
+    }
+
+    .select-filtro {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 2px solid #a9845c;
+      background-color: #f9f4ef;
+      color: #4d3104;
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      transition: border 0.3s ease, box-shadow 0.3s ease;
+      outline: none;
+    }
+
+    .select-filtro:hover,
+    .select-filtro:focus {
+      border-color: #6b4f1d;
+      box-shadow: 0 0 5px rgba(107, 79, 29, 0.4);
+    }  
+
+  @media screen and (max-width: 600px) {
+    .select-filtro {
+      width: 100%;
+    }
+  }

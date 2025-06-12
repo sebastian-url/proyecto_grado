@@ -12,7 +12,7 @@
   <!-- Navbar -->
   <div class="navbar">
     <button class="menu-toggle" id="toggleMenu">☰</button>
-    <h1>AvenaCorp - Usuarios</h1>
+    <h1>RicaAvena - Usuarios</h1>
     <div class="usuario">Bienvenido, <span id="nombre-usuario">Cargando...</span></div>
   </div>
 
@@ -29,6 +29,17 @@
   <!-- Contenido -->
   <div class="contenido">
     <h2>Lista de Usuarios</h2>
+    <label class="filtro
+    
+    " for="filtro-estado">Filtrar por estado:</label>
+    <select id="filtro-estado" class="select-filtro">
+      <option value="">Todos</option>
+      <option value="activo">Activo</option>
+      <option value="inactivo">Bloqueado</option>
+      <option value="eliminado">Eliminado</option>
+    </select>
+
+
     <br>
     <table>
       <thead>

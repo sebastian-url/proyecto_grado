@@ -53,28 +53,32 @@ class ModeloUsuario():
         except Exception as e:
             return f"Error al registrar: {e}"
         
-    @classmethod
-    def bloqueraUsuarios(self,db,id_usuario):
-        try: 
-            sql = 'UPDATE usuarios SET estado = "inactivo" WHERE id = %s'
+
+    @staticmethod
+    def bloquearUsuarios(db, id_usuario):
+        try:
             cursor = db.connection.cursor()
-            cursor.execute(sql,(id_usuario,))
-            cursor.connection.commit()
-            return cursor.rowcount
-            
-        except Exception as e:
-            return f"Error al intentar modificar: {e}"
-        
-    @classmethod
-    def activarUsuario(self, db, id_usuario):
-        try: 
-            sql = 'UPDATE usuarios SET estado = "activo" WHERE id = %s'
-            cursor = db.connection.cursor()
+            sql = "UPDATE usuarios SET estado = 'inactivo' WHERE id = %s"
             cursor.execute(sql, (id_usuario,))
             cursor.connection.commit()
             return cursor.rowcount
         except Exception as e:
-            return f"Error al intentar activar: {e}"
+            print(f"Error al bloquear usuario: {e}")
+            return 0
+
+        
+    @staticmethod
+    def desbloquearUsuarios(db, id_usuario):
+        try:
+            cursor = db.connection.cursor()
+            sql = "UPDATE usuarios SET estado = 'activo' WHERE id = %s"
+            cursor.execute(sql, (id_usuario,))
+            cursor.connection.commit()
+            return cursor.rowcount
+        except Exception as e:
+            print(f"Error al desbloquear usuario: {e}")
+            return False
+
 
     
     @classmethod
@@ -92,9 +96,9 @@ class ModeloUsuario():
         except Exception as e:
             return f"Error al intentar modificar: {e}"
     @classmethod
-    def obtenerUsuarios(self,db):
-        try: 
-            sql = 'SELECT * FROM usuarios WHERE estado = "activo" AND rol_id = 2'
+    def obtenerUsuarios(self, db):
+        try:
+            sql = 'SELECT * FROM usuarios WHERE rol_id = 2'
             cursor = db.connection.cursor()
             cursor.execute(sql)
             usuarios = cursor.fetchall()
@@ -104,12 +108,13 @@ class ModeloUsuario():
                     "nombre": usuario[1],
                     "apellido": usuario[2],
                     "celular": usuario[3],
-                    "correo": usuario[4]
+                    "correo": usuario[4],
+                    "estado": usuario[6]  # asumimos que 'estado' está en la columna 7
                 } for usuario in usuarios
             ]
-            
         except Exception as e:
             return f"Error al intentar modificar: {e}"
+
         
     @classmethod
     def obtenerUsuarioPorId(self,db,id_usuario):

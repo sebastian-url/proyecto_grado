@@ -1,5 +1,10 @@
 cargarUsuarios();
 
+document.getElementById("filtro-estado").addEventListener("change", function () {
+  cargarUsuarios(this.value);
+});
+
+
 function mostrarModalMensaje(mensaje, esError = false) {
   const modalTexto = document.getElementById("textoMensaje");
   modalTexto.textContent = mensaje;
@@ -85,39 +90,47 @@ async function eliminarUsuario(id) {
   setTimeout(() => cerrarModalMensaje(), 2000);
 }
 
-async function cargarUsuarios() {
+async function cargarUsuarios(filtroEstado = "") {
   const tabla = document.getElementById("tabla-usuarios");
   tabla.innerHTML = "";
 
   const res = await fetch("/api/usuarios");
-  if (res.ok) {
-    const usuarios = await res.json();
-    if (usuarios.length === 0) {
-      const fila = document.createElement("tr");
-      fila.innerHTML = "<td colspan='7'>No hay usuarios disponibles</td>";
-      tabla.appendChild(fila);
-      return;
+  if (!res.ok) {
+    mostrarModalMensaje("Error al cargar usuarios", true);
+    return;
+  }
+
+  const usuarios = await res.json();
+  const usuariosFiltrados = filtroEstado
+    ? usuarios.filter(u => u.estado === filtroEstado)
+    : usuarios;
+
+  if (usuariosFiltrados.length === 0) {
+    const fila = document.createElement("tr");
+    fila.innerHTML = "<td colspan='7'>No hay usuarios disponibles</td>";
+    tabla.appendChild(fila);
+    return;
+  }
+
+  usuariosFiltrados.forEach(u => {
+    const fila = document.createElement("tr");
+    const estadoHTML = u.estado === 'activo'
+      ? `<span class="estado estado-activo">Activo</span>`
+      : u.estado === 'inactivo'
+        ? `<span class="estado estado-bloqueado">Bloqueado</span>`
+        : `<span class="estado estado-eliminado">Eliminado</span>`;
+
+    let acciones = "";
+
+    if (u.estado === 'activo') {
+      acciones += `<button onclick="abrirModal(${u.id}, '${u.nombre}')">Bloquear</button>`;
+    } else if (u.estado === 'inactivo') {
+      acciones += `<button onclick="activarUsuario(${u.id})">Activar</button>`;
     }
 
-    usuarios.forEach(u => {
-      const fila = document.createElement("tr");
-      const estadoHTML = u.estado === 'activo'
-        ? `<span class="estado estado-activo">Activo</span>`
-        : u.estado === 'inactivo'
-          ? `<span class="estado estado-bloqueado">Bloqueado</span>`
-          : `<span class="estado estado-eliminado">Eliminado</span>`;
-
-      let acciones = "";
-
-      if (u.estado === 'activo') {
-        acciones += `<button onclick="abrirModal(${u.id}, '${u.nombre}')">Bloquear</button>`;
-      } else if (u.estado === 'inactivo') {
-        acciones += `<button onclick="activarUsuario(${u.id})">Activar</button>`;
-      }
-
-      if (u.estado !== 'eliminado') {
-        acciones += `<button onclick="eliminarUsuario(${u.id})">Eliminar</button>`;
-      }
+    if (u.estado !== 'eliminado') {
+      acciones += `<button onclick="eliminarUsuario(${u.id})">Eliminar</button>`;
+    }
 
       fila.innerHTML = `
         <td>${u.id}</td>
@@ -131,12 +144,25 @@ async function cargarUsuarios() {
       tabla.appendChild(fila);
     });
   }
-}
 
 window.addEventListener('DOMContentLoaded', async () => {
-  const res = await fetch('/api/usuario-logueado');
-  if (res.ok) {
-    const usuario = await res.json();
-    document.getElementById("nombre-usuario").textContent = usuario.nombre;
+  // Obtener y mostrar nombre del usuario
+  try {
+    const res = await fetch('/api/usuario-logueado');
+    if (res.ok) {
+      const usuario = await res.json();
+      const nombre = usuario.nombre || "Invitado";
+      document.getElementById("nombre-usuario").textContent = nombre;
+    } else {
+      document.getElementById("nombre-usuario").textContent = "Invitado";
+    }
+  } catch (err) {
+    console.error("Error al obtener usuario logueado:", err);
+    document.getElementById("nombre-usuario").textContent = "Invitado";
   }
+
+  // Cargar usuarios al iniciar
+  cargarUsuarios();
 });
+
+

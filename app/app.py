@@ -160,13 +160,12 @@ def compra():
     else:
         return redirect(url_for('login'))  # Rol no permitido
 
-
 @app.route('/api/usuario-logueado', methods=['GET'])
 def usuario_logueado():
     if 'usuario' in session:
-        return jsonify(session['usuario'])
+        return jsonify(session['usuario'])  # Asegúrate que 'nombre' esté en session['usuario']
     else:
-        return jsonify({'error': 'No ha iniciado sesión'}), 400
+        return jsonify({'error': 'No ha iniciado sesión'}), 401
 
 #validar el rol
 @app.route('/api/admin-only', methods=['GET'])
@@ -189,7 +188,7 @@ def registro():
         correo = data.get('correo')
         contrasena = data.get('contrasena')
         res = ModeloUsuario.registrar(db,nombre,apellido,celular,correo,contrasena)
-        if res is None:
+        if int(res) > 0:
             return jsonify({'mensaje':'Error al registrar el usuario'})
         return jsonify({'mensaje':'Usuario registrado exitosamente'})
     else:
@@ -210,26 +209,22 @@ def obtener_usuarios():
 #ruta para bloquear usuarios
 @app.route('/api/bloquear-usuario/<int:id_usuario>', methods=['PUT'])
 def bloquear_usuario(id_usuario):
-    if 'usuario' not in session or session['usuario']['rol'] != 1:
-        return jsonify({'error': 'Acceso denegado'}), 403
+    respuesta = ModeloUsuario.bloquearUsuarios(db, id_usuario)
+    if int(respuesta) > 0:
+        return jsonify({'mensaje': 'Usuario bloqueado exitosamente'}), 200
+    else:
+        return jsonify({'error': 'No se pudo bloquear el usuario'}), 500
+
     
-    respuesta = ModeloUsuario.bloqueraUsuarios(db, id_usuario)
-    
-    if isinstance(respuesta, int) and respuesta == 0:
-        return jsonify({'error': 'Error al bloquear el usuario'}), 500
-    
-    return jsonify({'mensaje': 'Usuario bloqueado exitosamente'})
 @app.route('/api/activar-usuario/<int:id_usuario>', methods=['PUT'])
 def activar_usuario(id_usuario):
-    if 'usuario' not in session or session['usuario']['rol'] != 1:
-        return jsonify({'error': 'Acceso denegado'}), 403
+    respuesta = ModeloUsuario.desbloquearUsuarios(db, id_usuario)
+    if int(respuesta) > 0:
+        return jsonify({"mensaje": "Usuario activado correctamente"}), 200
+    else:
+        return jsonify({"error": "No se pudo activar el usuario"}), 500
 
-    respuesta = ModeloUsuario.desbloqueraUsuarios(db, id_usuario)
 
-    if isinstance(respuesta, int) and respuesta == 0:
-        return jsonify({'error': 'Error al activar el usuario'}), 500
-
-    return jsonify({'mensaje': 'Usuario activado exitosamente'})
 
 @app.route('/api/eliminar-usuario/<int:id_usuario>', methods=['PUT'])
 def eliminar_usuario(id_usuario):
