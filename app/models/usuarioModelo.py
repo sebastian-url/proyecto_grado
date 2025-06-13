@@ -161,4 +161,11 @@ class ModeloUsuario():
             return cursor.rowcount
         except Exception as e:
             return f"Error al obtener el usuario por ID: {e}"
+        
+    @classmethod
+    def obtenerContrasena(self,db,correo):
+            cursor = db.connection.cursor()
+            cursor.execute("SELECT contrasena FROM usuarios WHERE correo = %s", (correo,))
+            resultado = cursor.fetchone()
+            return resultado
 

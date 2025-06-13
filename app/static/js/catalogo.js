@@ -152,3 +152,47 @@
   }
 
     window.addEventListener('DOMContentLoaded', cargarProductos());
+
+function abrirModalCambio() {
+  document.getElementById("modalCambio").style.display = "flex";
+}
+
+function cerrarModalCambio() {
+  document.getElementById("modalCambio").style.display = "none";
+}
+
+function enviarCambio(e) {
+  e.preventDefault();
+
+  const form = document.getElementById("formCambio");
+  const actual = form.actual.value;
+  const nueva = form.nueva.value;
+  const confirmar = form.confirmar.value;
+
+  if (nueva !== confirmar) {
+    mostrarModalMensaje("Las contraseñas no coinciden", true);
+    setTimeout(cerrarModalMensaje, 2000);
+    return;
+  }
+
+  fetch("/cambiar_password", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ actual, nueva, confirmar })
+  })
+    .then(res => res.json())
+    .then(data => {
+      cerrarModalCambio();
+      mostrarModalMensaje(data.mensaje, !data.exito);
+      if (data.exito) {
+        form.reset();
+      }
+      setTimeout(cerrarModalMensaje, 2000);
+    })
+    .catch(err => {
+      cerrarModalCambio();
+      mostrarModalMensaje("Error al cambiar contraseña", true);
+      setTimeout(cerrarModalMensaje, 2000);
+    });
+}
+

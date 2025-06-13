@@ -9,10 +9,17 @@ from models.compraModelo import CompraModelo
 import threading
 import os
 from werkzeug.utils import secure_filename
+import random
+import string
+import datetime
+from werkzeug.security import generate_password_hash,check_password_hash 
+from flask_mysqldb import MySQL
 
 # --- Configurar la app de Flask ---
 app = Flask(__name__)
 CORS(app)  # Permite solicitudes desde el frontend
+
+
 
 #para la base de datos
 db = MySQL(app)
@@ -412,6 +419,7 @@ def recuperar_contra():
     if usuario_encontrado is None:
         return jsonify({'error':'El correo ingresado no aceptado'}), 404
     
+    
     id_usuario = usuario_encontrado[0]
 
     contraseña = ModeloUsuario.generarContraseña()
@@ -500,6 +508,41 @@ def recuperar_contra():
             return jsonify({'mensaje': 'Contraseña enviada exitosamente'})
         except Exception as e:
             return jsonify({'error': 'No se pudo enviar el correo'}), 500
+        
+@app.route('/cambiar_password', methods=['POST'])
+def cambiar_password():
+    data = request.get_json()
+    actual = data.get('actual')
+    nueva = data.get('nueva')
+    confirmar = data.get('confirmar')
+
+    if nueva != confirmar:
+        return jsonify({'exito': False, 'mensaje': 'Las contraseñas no coinciden'})
+
+    correo = session['usuario']['correo']
+
+    if not correo:
+        return jsonify({'exito': False, 'mensaje': 'Usuario no autenticado'})
+
+    resultado = ModeloUsuario.obtenerContrasena(db,correo)
+    if resultado and check_password_hash(resultado[0], actual):
+
+        usuario_encontrado = ModeloUsuario.obtenerUsuarioPorCorreo(db,correo)
+        if usuario_encontrado is None:
+            return jsonify({'error':'El correo ingresado no aceptado'}), 404
+        
+        
+        id_usuario = usuario_encontrado[0]
+
+        actualizada = ModeloUsuario.actualizar_contraseña(db,id_usuario,nueva)
+
+        if actualizada > 0:
+            return jsonify({'exito': True, 'mensaje': 'Contraseña actualizada con éxito'})
+
+        return jsonify({'exito': False, 'mensaje': 'Contraseña no se pudo modificar'})
+
+    else:
+        return jsonify({'exito': False, 'mensaje': 'Contraseña actual incorrecta'})
     
 #ruta para obtener pedidos
 @app.route('/api/pedidos', methods=['GET'])
