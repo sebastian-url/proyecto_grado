@@ -17,34 +17,40 @@ class ModeloUsuario():
             return None
     
     @classmethod
-    def iniciarSesion(self,db,correo,contrasena):
+    def iniciarSesion(cls, db, correo, contrasena):
         try:
-            usuario = self.obtenerUsuarioPorCorreo(db,correo)
-            if usuario != None:
-                if check_password_hash(usuario[5],contrasena):
-                    # Si la contraseña es correcta, retornamos el usuario
-                    return {
-                        "id": usuario[0],
-                        "nombre": usuario[1],
-                        "apellido": usuario[2],
-                        "celular": usuario[3],
-                        "correo": usuario[4],
-                        "rol": usuario[7]
-                    }
+            cursor = db.connection.cursor()
+            sql = "SELECT * FROM usuarios WHERE correo = %s"
+            cursor.execute(sql, (correo,))
+            usuario = cursor.fetchone()
+
+            if usuario and check_password_hash(usuario[5], contrasena):  # Asumiendo que la contraseña está en el índice 5
+                return {
+                    "id": usuario[0],
+                    "nombre": usuario[1],
+                    "apellido": usuario[2],
+                    "celular": usuario[3],
+                    "correo": usuario[4],
+                    "direccion": usuario[6],
+                    "rol": usuario[7]
+                }
 
             return None
         except Exception as e:
-            return f"Error al iniciar sesion: {e}"
+            print(f"Error al iniciar sesión: {e}")
+        return None
+
+
         
     @classmethod
-    def registrar(self,db,nombre,apellido,celular,correo,contrasena):
+    def registrar(self,db,nombre,apellido,celular,correo,direccion,contrasena):
         try:
             usuario = self.obtenerUsuarioPorCorreo(db,correo)
             if usuario == None:
                 contrasena_hash = generate_password_hash(contrasena, method='pbkdf2:sha256', salt_length=8)
                 cursor = db.connection.cursor()
-                sql= "INSERT INTO usuarios (nombre, apellido, celular, correo, contrasena) VALUES (%s, %s, %s, %s, %s)"
-                cursor.execute(sql, (nombre, apellido, celular, correo, contrasena_hash))
+                sql= "INSERT INTO usuarios (nombre, apellido, celular, correo,direccion, contrasena) VALUES (%s, %s, %s, %s,%s, %s)"
+                cursor.execute(sql, (nombre, apellido, celular, correo, direccion, contrasena_hash))
                 cursor.connection.commit()
                 return cursor.lastrowid
             
@@ -108,7 +114,8 @@ class ModeloUsuario():
                     "nombre": usuario[1],
                     "apellido": usuario[2],
                     "celular": usuario[3],
-                    "correo": usuario[4],
+                    "direccion": usuario[4],
+                    "correo": usuario[5],
                     "estado": usuario[6]  # asumimos que 'estado' está en la columna 7
                 } for usuario in usuarios
             ]

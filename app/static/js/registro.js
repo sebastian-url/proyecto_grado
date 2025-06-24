@@ -15,6 +15,7 @@
         const nombre = document.getElementById("nombre").value;
         const apellido = document.getElementById("apellido").value;
         const celular = document.getElementById("celular").value;
+        const direccion = document.getElementById("direccion").value;
         const correo = document.getElementById("correo").value;
         const contrasena = document.getElementById('contrasena').value
         if (contrasena.length < 8) {

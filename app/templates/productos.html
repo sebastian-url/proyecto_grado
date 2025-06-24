@@ -86,7 +86,7 @@
                 <h3>Registrar Producto</h3>
                 <label>Nombre: <input type="text" id="nombre" name="nombre"></label><br>
                 <label>Descripcion: <input type="text" id="descripcion" name="descripcion"></label><br>
-                <label>Precio: <input type="number" id="precio" name="precio"></label><br>
+                <label>Precio: <input type="number" id="precio" name="precio" min="1" required>></label><br>
                 <label>Imagen: <input type="file" id="imagen" name="imagen"></label><br>
                 <div class="modal-botones">
                   <button type="button" onclick="cerrarModal('modalAgregar')">Cancelar</button>
@@ -105,7 +105,7 @@
                 <input type="hidden" id="editar-id" name="editar-id">
                 <label>Nombre: <input type="text" id="editar-nombre" name="editar-nombre"></label><br>
                 <label>Descripción: <input type="text" id="editar-descripcion" name="editar-descripcion"></label><br>
-                <label>Precio: <input type="number" id="editar-precio" name="editar-precio"></label><br>
+                <label>Precio: <input type="number" id="editar-precio" name="editar-precio" min="1" required>></label><br>
                 <label>Imagen: <input type="file" id="editar-imagen" name="editar-imagen"></label><br>
                 <div class="modal-botones">
                     <button type="button" onclick="cerrarModal('modalEditar')">Cancelar</button>

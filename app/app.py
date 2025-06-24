@@ -45,29 +45,40 @@ def enviar_correo_async(app, msg):
 def index():
     return render_template("index.html")
 
-#ruta del login
-@app.route('/login',methods=['GET','POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         data = request.get_json()
         correo = data.get('correo')
         contrasena = data.get('contrasena')
-        res = ModeloUsuario.iniciarSesion(db,correo,contrasena)
-        if res is None:
-            return jsonify({'mensaje':'Error al iniciar sesion, verifique sus credenciales'}), 401
-        # Guardar el usuario en la sesión
-        session['usuario'] = {
-            'id': res['id'],
-            'nombre': res['nombre'],
-            'apellido': res['apellido'],
-            'celular': res['celular'],
-            'correo': res['correo'],
-            'rol': res['rol']
-        }
 
-        return jsonify({'mensaje':'inicio de sesion exitoso','rol':res['rol']})
-    else:
-        return render_template('index.html')
+        if not correo or not contrasena:
+            return jsonify({'mensaje': 'Correo y contraseña requeridos'}), 400
+
+        res = ModeloUsuario.iniciarSesion(db, correo, contrasena)
+
+        if isinstance(res, dict):
+            # Guardar el usuario en la sesión (sin contraseña)
+            session['usuario'] = {
+                'id': res['id'],
+                'nombre': res['nombre'],
+                'apellido': res['apellido'],
+                'celular': res['celular'],
+                'correo': res['correo'],
+                'rol': res['rol'],
+                'direccion': res['direccion']
+            }
+            return jsonify({'mensaje': 'Inicio de sesión exitoso', 'rol': res['rol']}), 200
+
+        elif isinstance(res, str) and res.startswith("Error"):
+            return jsonify({'mensaje': res}), 500
+
+        else:
+            return jsonify({'mensaje': 'Error al iniciar sesión, verifique sus credenciales'}), 401
+
+    # Si es GET, renderiza HTML
+    return render_template('index.html')
+
 
 @app.route('/menu')
 def menu():
@@ -194,12 +205,18 @@ def registro():
         celular = data.get('celular')
         correo = data.get('correo')
         contrasena = data.get('contrasena')
-        res = ModeloUsuario.registrar(db,nombre,apellido,celular,correo,contrasena)
-        if int(res) > 0:
-            return jsonify({'mensaje':'Error al registrar el usuario'})
-        return jsonify({'mensaje':'Usuario registrado exitosamente'})
-    else:
-        return render_template('registro.html')
+        direccion =data.get('direccion')
+        res = ModeloUsuario.registrar(db,nombre,apellido,celular,correo,direccion,contrasena)
+        if isinstance(res, int) and res > 0:
+            return jsonify({'mensaje': 'Usuario registrado exitosamente'})
+        elif res is None:
+            return jsonify({'mensaje': 'El usuario ya existe'})
+        elif isinstance(res, str) and res.startswith("Error al registrar"):
+            return jsonify({'mensaje': res})
+        else:
+            return jsonify({'mensaje': 'Error desconocido al registrar'})
+
+    return render_template('registro.html')
 
 #ruta para obtener los usuarios
 @app.route('/api/usuarios', methods=['GET'])
