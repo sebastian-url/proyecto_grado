@@ -45,13 +45,16 @@ class ModeloUsuario():
     @classmethod
     def registrar(self,db,nombre,apellido,celular,correo,direccion,contrasena):
         try:
+            print(nombre,apellido,celular,correo,direccion,contrasena)
             usuario = self.obtenerUsuarioPorCorreo(db,correo)
             if usuario == None:
                 contrasena_hash = generate_password_hash(contrasena, method='pbkdf2:sha256', salt_length=8)
                 cursor = db.connection.cursor()
-                sql= "INSERT INTO usuarios (nombre, apellido, celular, correo,direccion, contrasena) VALUES (%s, %s, %s, %s,%s, %s)"
+                sql= sql = "INSERT INTO usuarios (nombre, apellido, celular, correo, direccion, contrasena, estado, rol_id) VALUES (%s, %s, %s, %s, %s, %s, 'activo', 2)"
                 cursor.execute(sql, (nombre, apellido, celular, correo, direccion, contrasena_hash))
-                cursor.connection.commit()
+                db.connection.commit()
+
+                print("Registro confirmado")
                 return cursor.lastrowid
             
             return None
@@ -114,8 +117,8 @@ class ModeloUsuario():
                     "nombre": usuario[1],
                     "apellido": usuario[2],
                     "celular": usuario[3],
-                    "direccion": usuario[4],
-                    "correo": usuario[5],
+                    "direccion": usuario[8],
+                    "correo": usuario[4],
                     "estado": usuario[6]  # asumimos que 'estado' está en la columna 7
                 } for usuario in usuarios
             ]

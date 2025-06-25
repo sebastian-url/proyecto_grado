@@ -2,16 +2,27 @@ class ProductoModelo:
     def __init__(self):
         pass
 
-    @classmethod #<-- decorador para indicar que no se necesita instanciar la clase para usar el metodo
-    def registrar_producto(self,db, nombre, descripcion, precio, rutaImagen):
+    @classmethod
+    def registrar_producto(cls, db, nombre, descripcion, precio, rutaImagen):
         try:
             cursor = db.connection.cursor()
+
+            # Validación: verificar si ya existe el producto
+            cursor.execute("SELECT * FROM producto WHERE nombre_producto = %s", (nombre,))
+            existente = cursor.fetchone()
+            if existente:
+                return {"error": "El producto ya existe"}
+
+            # Insertar nuevo producto
             sql = "INSERT INTO producto (nombre_producto, descripcion, precio_producto, imagen) VALUES (%s, %s, %s, %s)"
             cursor.execute(sql, (nombre, descripcion, precio, rutaImagen))
             db.connection.commit()
-            return cursor.lastrowid
+
+            return {"success": True, "id": cursor.lastrowid}
+        
         except Exception as e:
-            return f"Error al registrar el producto: {e}"
+            return {"error": f"Error al registrar el producto: {e}"}
+
         
     @classmethod
     def obtener_productos(self, db):
@@ -21,7 +32,7 @@ class ProductoModelo:
             productos = cursor.fetchall()
             return [
                 {
-                    "id": producto[0],
+                    #"id": producto[0],
                     "nombre_producto": producto[1],
                     "descripcion": producto[2],
                     "precio_producto": producto[3],

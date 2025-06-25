@@ -27,7 +27,7 @@
         const res = await fetch("/registro", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ nombre, apellido, celular, correo, contrasena })
+            body: JSON.stringify({ nombre, apellido, celular, correo, direccion, contrasena })
         });
 
         const data = await res.json();

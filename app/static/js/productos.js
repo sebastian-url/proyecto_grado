@@ -40,10 +40,12 @@
         document.getElementById(id).style.display = 'block';
     }
 
-    function cerrarModal(id) {
-        document.getElementById(id).style.display = 'none';
+    function cerrarModal(idModal) {
+      const modal = document.getElementById(idModal);
+      if (modal) {
+        modal.style.display = 'none';
+      }
     }
-
 
 
     const formulario = document.getElementById('formAgregarProducto');
@@ -148,21 +150,22 @@
         const tbody = document.querySelector('.tabla-productos tbody');
         tbody.innerHTML = ''; // Limpia antes de insertar
 
-        productos.forEach(producto => {
-        const fila = document.createElement('tr');
-        fila.innerHTML = `
-            <td>${producto.id}</td>
+        productos.forEach((producto, index) => {
+          const fila = document.createElement('tr');
+          fila.innerHTML = `
+            <td>${index + 1}</td>
             <td>${producto.nombre_producto}</td>
             <td>${producto.descripcion}</td>
             <td>${producto.precio_producto}</td>
-            <td><img class="imagenProducto" src="../static/img/${producto.imagen}"></img></td>
+            <td><img class="imagenProducto" src="../static/img/${producto.imagen}" width="80"></td>
             <td class="acciones">
-            <button onclick="abrirModalEditar(${producto.id}, '${producto.nombre_producto}', '${producto.descripcion}', ${producto.precio_producto})">Editar</button>
-            <button onclick="abrirModalEliminar(${producto.id},'${producto.nombre_producto}', '${producto.descripcion}')">Eliminar</button>
+                <button onclick="abrirModalEditar(${producto.id}, '${producto.nombre_producto}', '${producto.descripcion}', ${producto.precio_producto})">Editar</button>
+                <button onclick="abrirModalEliminar(${producto.id}, '${producto.nombre_producto}', '${producto.descripcion}')">Eliminar</button>
             </td>
-        `;
-        tbody.appendChild(fila);
+          `;
+          tbody.appendChild(fila);
         });
+
     }
 
     // Rellenar modal de edición

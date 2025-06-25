@@ -282,6 +282,7 @@ def desbloquear_usuario(id_usuario):
 def registrar_producto():
     if 'usuario' not in session or session['usuario']['rol'] != 1:
         return jsonify({'error': 'Acceso denegado'}), 403
+    
 
     nombre = request.form.get('nombre')
     descripcion = request.form.get('descripcion')

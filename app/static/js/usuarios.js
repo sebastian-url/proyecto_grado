@@ -138,7 +138,7 @@ async function cargarUsuarios(filtroEstado = "") {
         <td>${u.apellido}</td>
         <td>${u.correo}</td>
         <td>${u.celular}</td>
-        <td>${estadoHTML}</td>
+        <td>${u.estado}</td>
         <td>${acciones}</td>
       `;
       tabla.appendChild(fila);
