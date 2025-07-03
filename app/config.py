@@ -8,7 +8,7 @@ class DevelopmentConfig(Config):
     MYSQL_HOST = 'localhost'
     MYSQL_USER = 'root'
     MYSQL_PASSWORD = ''
-    MYSQL_DB = 'proyect'
+    MYSQL_DB = 'proyecto'
     MYSQL_PORT = 3306
 
 config={

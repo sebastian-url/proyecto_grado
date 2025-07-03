@@ -107,11 +107,13 @@
         const id = document.getElementById('eliminar-id').value;
 
         const res = await fetch(`/api/eliminar-producto/${id}`, {
-            method: 'PUT',
+            method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
             },
+            credentials: 'include'  
         });
+
 
         if (res.ok) {
             cerrarModal('modalEliminar');

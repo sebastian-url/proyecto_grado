@@ -412,18 +412,22 @@ def actualizar_pedido(id):
         except Exception as e:
             return jsonify({'error': 'No se pudo enviar el correo'}), 500
 
-#ruta para eliminar productos
-@app.route('/api/eliminar-producto/<int:id>', methods=['PUT'])
+@app.route('/api/eliminar-producto/<int:id>', methods=['DELETE'])
 def eliminar_producto(id):
-    if 'usuario' not in session or session['usuario']['rol'] != 1:
+    if 'usuario' not in session or session['usuario'].get('rol') != 1:
         return jsonify({'error': 'Acceso denegado'}), 403
-    
+
     respuesta = ProductoModelo.eliminar_producto(db, id)
-    
-    if respuesta is None:
-        return jsonify({'error': 'Error al eliminar el producto'}), 500
-    
+
+    if isinstance(respuesta, str):
+        status_code = 404 if respuesta == "El producto no existe" else 500
+        return jsonify({'error': respuesta}), status_code
+
+    if respuesta == 0:
+        return jsonify({'error': 'No se eliminó ningún producto'}), 404
+
     return jsonify({'mensaje': 'Producto eliminado exitosamente'})
+
 
 #ruta para recuperar contraseña
 @app.route('/recuperar-contraseña',methods=['POST'])
@@ -634,22 +638,48 @@ def actualizar_producto():
     return jsonify({'mensaje': 'Producto actualizado exitosamente'})
 
 
-#ruta para comprar productos
 @app.route('/api/comprar-producto', methods=['POST'])
 def comprar_producto():
     if 'usuario' not in session:
         return jsonify({'error': 'No ha iniciado sesión'}), 401
-    
+
     usuario = session['usuario']
     id_producto = request.json.get('id_producto')
-    cantidad = request.json.get('cantidad', 1)  # Por defecto, comprar 1 unidad
-    fecha = request.json.get('fecha')
-    total = request.json.get('total')
+    cantidad = request.json.get('cantidad', 1)
+    fecha = request.json.get('fecha')  # opcional, puedes usar datetime.now() si no viene
 
-    compra_realizada = CompraModelo.registrar_compra(db, usuario['id'], id_producto, cantidad, fecha, total)
+    # Seguridad: prevenir que el frontend intente enviar 'total'
+    if 'total' in request.json:
+        return jsonify({'error': 'No se permite enviar el total desde el cliente'}), 400
+
+    # Validación de cantidad
+    try:
+        cantidad = int(cantidad)
+        if cantidad <= 0:
+            raise ValueError
+    except (ValueError, TypeError):
+        return jsonify({'error': 'La cantidad debe ser un número entero mayor que cero'}), 400
+
+    cursor = db.connection.cursor()
+    cursor.execute("SELECT precio_producto FROM producto WHERE id_producto = %s AND estado = 'activo'", (id_producto,))
+    producto = cursor.fetchone()
+
+    if not producto:
+        return jsonify({'error': 'Producto no encontrado o inactivo'}), 404
+
+    precio = producto[0]
+    total = precio * cantidad
+
+    compra_realizada = CompraModelo.registrar_compra(
+        db, usuario['id'], id_producto, cantidad, fecha, total
+    )
+
     if compra_realizada is None:
         return jsonify({'error': 'Error al realizar la compra'}), 500
+
     return jsonify({'mensaje': 'Producto comprado exitosamente'})
+
+
 
 
 @app.route('/logout', methods=['GET'])

@@ -7,15 +7,19 @@ class ModeloUsuario():
         pass
     
     @classmethod
-    def obtenerUsuarioPorCorreo(self,db,correo):
+    def obtenerUsuarioPorDatos(self, db, nombre, apellido, celular, correo):
         try:
             cursor = db.connection.cursor()
-            cursor.execute("SELECT * FROM usuarios WHERE correo=%s AND estado = 'activo'", (correo,))
-            usuario = cursor.fetchone()
-            return usuario
+            sql = """
+                SELECT * FROM usuarios 
+                WHERE nombre = %s AND apellido = %s AND celular = %s AND correo = %s
+                AND estado = 'activo'
+            """
+            cursor.execute(sql, (nombre, apellido, celular, correo))
+            return cursor.fetchone()
         except Exception as e:
             return None
-    
+
     @classmethod
     def iniciarSesion(cls, db, correo, contrasena):
         try:
@@ -24,14 +28,14 @@ class ModeloUsuario():
             cursor.execute(sql, (correo,))
             usuario = cursor.fetchone()
 
-            if usuario and check_password_hash(usuario[5], contrasena):  # Asumiendo que la contraseña está en el índice 5
+            if usuario and check_password_hash(usuario[5], contrasena):
                 return {
                     "id": usuario[0],
                     "nombre": usuario[1],
                     "apellido": usuario[2],
                     "celular": usuario[3],
                     "correo": usuario[4],
-                    "direccion": usuario[6],
+                    "direccion": usuario[8],
                     "rol": usuario[7]
                 }
 
@@ -40,27 +44,37 @@ class ModeloUsuario():
             print(f"Error al iniciar sesión: {e}")
         return None
 
-
-        
     @classmethod
-    def registrar(self,db,nombre,apellido,celular,correo,direccion,contrasena):
+    def registrar(cls, db, nombre, apellido, celular, correo, direccion, contrasena):
         try:
-            print(nombre,apellido,celular,correo,direccion,contrasena)
-            usuario = self.obtenerUsuarioPorCorreo(db,correo)
-            if usuario == None:
+            print(nombre, apellido, celular, correo, direccion, contrasena)
+            
+            # Verifica si ya existe un usuario con esos datos
+            usuario = cls.obtenerUsuarioPorDatos(db, nombre, apellido, celular, correo)
+            
+            if usuario is None:
                 contrasena_hash = generate_password_hash(contrasena, method='pbkdf2:sha256', salt_length=8)
                 cursor = db.connection.cursor()
-                sql= sql = "INSERT INTO usuarios (nombre, apellido, celular, correo, direccion, contrasena, estado, rol_id) VALUES (%s, %s, %s, %s, %s, %s, 'activo', 2)"
+                sql = """
+                    INSERT INTO usuarios 
+                    (nombre, apellido, celular, correo, direccion, contrasena, estado, rol_id) 
+                    VALUES (%s, %s, %s, %s, %s, %s, 'activo', 2)
+                """
                 cursor.execute(sql, (nombre, apellido, celular, correo, direccion, contrasena_hash))
                 db.connection.commit()
 
                 print("Registro confirmado")
                 return cursor.lastrowid
             
+            print("El usuario ya existe con los mismos datos.")
             return None
 
         except Exception as e:
             return f"Error al registrar: {e}"
+
+    # Aquí siguen los otros métodos de la clase sin cambios...
+
+
         
 
     @staticmethod

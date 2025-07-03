@@ -8,7 +8,11 @@ class ProductoModelo:
             cursor = db.connection.cursor()
 
             # Validación: verificar si ya existe el producto
-            cursor.execute("SELECT * FROM producto WHERE nombre_producto = %s", (nombre,))
+            cursor.execute(
+    "SELECT * FROM producto WHERE nombre_producto = %s AND descripcion = %s AND precio_producto = %s AND imagen = %s",
+    (nombre, descripcion, precio, rutaImagen)
+)
+
             existente = cursor.fetchone()
             if existente:
                 return {"error": "El producto ya existe"}
@@ -59,13 +63,23 @@ class ProductoModelo:
             return f"Error al actualizar el producto: {e}"
         
     @classmethod
-    def eliminar_producto(self, db, id_producto):
+    def eliminar_producto(cls, db, id_producto):
         try:
             cursor = db.connection.cursor()
-            sql = "UPDATE producto SET estado = 0 WHERE id_producto=%s"
-            cursor.execute(sql, (id_producto,))
+            cursor.execute("SELECT id_producto FROM producto WHERE id_producto = %s", (id_producto,))
+            producto = cursor.fetchone()
+            if not producto:
+                return "El producto no existe"
+
+            # Verificar que la columna 'estado' exista en la tabla producto
+            cursor.execute("DELETE FROM producto WHERE id_producto = %s", (id_producto,))
             db.connection.commit()
             return cursor.rowcount
+
         except Exception as e:
+            print(f"Error al eliminar el producto: {e}")
             return f"Error al eliminar el producto: {e}"
+
+
+
         
