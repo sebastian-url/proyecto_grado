@@ -78,23 +78,23 @@
         <!-- Más filas aquí dinámicamente si deseas -->
       </tbody>
     </table>
+<!-- Modal Agregar -->
+<div id="modalAgregar" class="modal" style="display: none;">
+  <div class="modal-contenido">
+    <form id="formAgregarProducto" enctype="multipart/form-data">
+      <h3>Registrar Producto</h3>
+      <label>Nombre: <input type="text" id="nombre" name="nombre"></label><br>
+      <label>Descripción: <input type="text" id="descripcion" name="descripcion"></label><br>
+      <label>Precio: <input type="number" id="precio" name="precio" min="1" required></label><br>
+      <label>Imagen: <input type="file" id="imagen" name="imagen"></label><br>
+      <div class="modal-botones">
+        <button type="button" onclick="cerrarModal('modalAgregar')">Cancelar</button>
+        <button type="submit">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
 
-    <!-- Modal Agregar -->
-    <div id="modalAgregar" class="modal" style="display: none;">
-        <div class="modal-contenido">
-            <form id="formAgregarProducto" enctype="multipart/form-data">
-                <h3>Registrar Producto</h3>
-                <label>Nombre: <input type="text" id="nombre" name="nombre"></label><br>
-                <label>Descripcion: <input type="text" id="descripcion" name="descripcion"></label><br>
-                <label>Precio: <input type="number" id="precio" name="precio" min="1" required>></label><br>
-                <label>Imagen: <input type="file" id="imagen" name="imagen"></label><br>
-                <div class="modal-botones">
-                  <button type="button" onclick="cerrarModal('modalAgregar')">Cancelar</button>
-                  <button type="submit">Guardar</button>
-                </div>
-            </form>
-        </div>
-    </div>
 
     <!-- Modal Editar -->
     <div id="modalEditar" class="modal" style="display: none;">
@@ -114,22 +114,23 @@
         </div>
     </div>
 
-    <!-- Modal Eliminar -->
-    <div id="modalEliminar" class="modal" style="display: none;">>
-    <div class="modal-contenido">
-        <form id="formEliminarProducto">
-            <input type="hidden" id="eliminar-id">
-            <h3>¿Deseas eliminar este producto?</h3>
-            <label id="nombre_producto"></label>
-            <br>
-            <label id="descripcion_producto"></label>
-            <div class="modal-botones">
-                <button type="button" onclick="cerrarModal('modalEliminar')">Cancelar</button>
-                <button type="submit">Eliminar</button>
-            </div>
-        </form>
-    </div>
-    </div>
+<!-- Modal Eliminar -->
+<div id="modalEliminar" class="modal" style="display: none;">
+  <div class="modal-contenido">
+    <form id="formEliminarProducto">
+      <input type="hidden" id="eliminar-id">
+      <h3>¿Deseas eliminar este producto?</h3>
+      <label id="nombre_producto"></label>
+      <br>
+      <label id="descripcion_producto"></label>
+      <div class="modal-botones">
+        <button type="button" onclick="cerrarModal('modalEliminar')">Cancelar</button>
+        <button type="submit">Eliminar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 
   </div>
 

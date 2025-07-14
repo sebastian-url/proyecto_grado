@@ -7,25 +7,30 @@ class ProductoModelo:
         try:
             cursor = db.connection.cursor()
 
-            # Validación: verificar si ya existe el producto
+            # Validar si ya existe un producto con mismo nombre
             cursor.execute(
-    "SELECT * FROM producto WHERE nombre_producto = %s AND descripcion = %s AND precio_producto = %s AND imagen = %s",
-    (nombre, descripcion, precio, rutaImagen)
-)
-
+                "SELECT * FROM producto WHERE nombre_producto = %s AND descripcion = %s",
+                (nombre, descripcion)
+            )
             existente = cursor.fetchone()
             if existente:
                 return {"error": "El producto ya existe"}
 
             # Insertar nuevo producto
-            sql = "INSERT INTO producto (nombre_producto, descripcion, precio_producto, imagen) VALUES (%s, %s, %s, %s)"
+            sql = """
+                INSERT INTO producto (nombre_producto, descripcion, precio_producto, imagen)
+                VALUES (%s, %s, %s, %s)
+            """
             cursor.execute(sql, (nombre, descripcion, precio, rutaImagen))
             db.connection.commit()
 
             return {"success": True, "id": cursor.lastrowid}
-        
+
         except Exception as e:
+            db.connection.rollback()  # Revertir si falla
+            print(f"Error al registrar el producto: {e}")
             return {"error": f"Error al registrar el producto: {e}"}
+
 
         
     @classmethod
@@ -66,20 +71,27 @@ class ProductoModelo:
     def eliminar_producto(cls, db, id_producto):
         try:
             cursor = db.connection.cursor()
+            # Verificar si el producto existe
             cursor.execute("SELECT id_producto FROM producto WHERE id_producto = %s", (id_producto,))
             producto = cursor.fetchone()
             if not producto:
                 return "El producto no existe"
 
-            # Verificar que la columna 'estado' exista en la tabla producto
+            # Intentar eliminar el producto
             cursor.execute("DELETE FROM producto WHERE id_producto = %s", (id_producto,))
             db.connection.commit()
+
+            if cursor.rowcount == 0:
+                return "No se eliminó ningún producto"
             return cursor.rowcount
 
         except Exception as e:
+            db.connection.rollback()  # Revertir por si hay error
             print(f"Error al eliminar el producto: {e}")
+            if "foreign key" in str(e).lower():
+                return "No se puede eliminar el producto porque está relacionado con una compra u otro registro"
             return f"Error al eliminar el producto: {e}"
 
 
 
-        
+            

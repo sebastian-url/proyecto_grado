@@ -1,46 +1,63 @@
-    function mostrarModalMensaje(mensaje, esError = false) {
-      const modalTexto = document.getElementById("textoMensaje");
-      modalTexto.textContent = mensaje;
-      modalTexto.style.color = esError ? "red" : "green";
-      document.getElementById("modalMensaje").style.display = "flex";
+function mostrarModalMensaje(mensaje, esError = false) {
+  const modalTexto = document.getElementById("textoMensaje");
+  modalTexto.textContent = mensaje;
+  modalTexto.style.color = esError ? "red" : "green";
+  document.getElementById("modalMensaje").style.display = "flex";
+}
+
+function cerrarModalMensaje() {
+  document.getElementById("modalMensaje").style.display = "none";
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("registroForm");
+
+  form.addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const nombre = document.getElementById("nombre").value.trim();
+    const apellido = document.getElementById("apellido").value.trim();
+    const celular = document.getElementById("celular").value.trim();
+    const direccion = document.getElementById("direccion").value.trim();
+    const correo = document.getElementById("correo").value.trim();
+    const contrasena = document.getElementById("contrasena").value;
+
+    if (contrasena.length < 8) {
+      mostrarModalMensaje("La contraseña debe tener al menos 8 caracteres.", true);
+      return;
     }
 
-    function cerrarModalMensaje() {
-      document.getElementById("modalMensaje").style.display = "none";
+    const datos = { nombre, apellido, celular, direccion, correo, contrasena };
+
+    try {
+      const res = await fetch('/registro', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datos)
+      });
+
+      let data;
+      const contentType = res.headers.get('Content-Type');
+
+      if (contentType && contentType.includes('application/json')) {
+        data = await res.json();
+      } else {
+        const texto = await res.text();
+        console.error('Respuesta inesperada del servidor:\n', texto);
+        mostrarModalMensaje('Respuesta inesperada del servidor', true);
+        return;
+      }
+
+      if (res.ok) {
+        mostrarModalMensaje(data.mensaje || 'Usuario registrado exitosamente');
+        setTimeout(() => window.location.href = "/login", 1500);
+      } else {
+        mostrarModalMensaje(data.mensaje || 'Error al registrar usuario', true);
+      }
+
+    } catch (err) {
+      console.error('Error procesando respuesta:', err);
+      mostrarModalMensaje('Error al registrar el usuario', true);
     }
-
-    document.getElementById("registroForm").addEventListener("submit", async function(e) {
-        e.preventDefault();
-
-        const nombre = document.getElementById("nombre").value;
-        const apellido = document.getElementById("apellido").value;
-        const celular = document.getElementById("celular").value;
-        const direccion = document.getElementById("direccion").value;
-        const correo = document.getElementById("correo").value;
-        const contrasena = document.getElementById('contrasena').value
-        if (contrasena.length < 8) {
-            alert("La contraseña debe tener al menos 8 caracteres.");
-            event.preventDefault(); // Evita que se envíe el formulario
-        }
-
-
-        const res = await fetch("/registro", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ nombre, apellido, celular, correo, direccion, contrasena })
-        });
-
-        const data = await res.json();
-
-        if (res.ok) {
-            mostrarModalMensaje("Registro exitoso. Redirigiendo al login...", false);
-            setTimeout(() => {
-                window.location.href = "/login"; // Redirige al login si el registro fue exitoso
-            }, 2000);
-        } else {
-            mostrarModalMensaje(data.error || "Error al registrar. Inténtalo de nuevo.", true);
-            setTimeout(() => {
-                cerrarModalMensaje(); // Cierra el modal después de mostrar el mensaje
-            }, 2000);
-        }
-    });
+  });
+});

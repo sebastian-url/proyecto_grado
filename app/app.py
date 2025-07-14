@@ -45,41 +45,26 @@ def enviar_correo_async(app, msg):
 def index():
     return render_template("index.html")
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['POST'])
 def login():
-    if request.method == 'POST':
+    try:
         data = request.get_json()
         correo = data.get('correo')
         contrasena = data.get('contrasena')
 
-        if not correo or not contrasena:
-            return jsonify({'mensaje': 'Correo y contraseña requeridos'}), 400
+        usuario = ModeloUsuario.iniciar_sesion(db, correo, contrasena)
 
-        res = ModeloUsuario.iniciarSesion(db, correo, contrasena)
-
-        if isinstance(res, dict):
-            # Guardar el usuario en la sesión (sin contraseña)
-            session['usuario'] = {
-                'id': res['id'],
-                'nombre': res['nombre'],
-                'apellido': res['apellido'],
-                'celular': res['celular'],
-                'correo': res['correo'],
-                'rol': res['rol'],
-                'direccion': res['direccion']
-            }
-            return jsonify({'mensaje': 'Inicio de sesión exitoso', 'rol': res['rol']}), 200
-
-        elif isinstance(res, str) and res.startswith("Error"):
-            return jsonify({'mensaje': res}), 500
-
+        if isinstance(usuario, dict):
+            session['usuario'] = usuario
+            return jsonify(usuario)
         else:
-            return jsonify({'mensaje': 'Error al iniciar sesión, verifique sus credenciales'}), 401
+            return jsonify({'error': 'Correo o contraseña incorrectos'}), 401
+    except Exception as e:
+        print('Error en /login:', e)
+        import traceback; traceback.print_exc()
+        return jsonify({'error': f'Error interno: {e}'}), 500
 
-    # Si es GET, renderiza HTML
-    return render_template('index.html')
-
-
+        
 @app.route('/menu')
 def menu():
     if 'usuario' not in session:
@@ -195,28 +180,46 @@ def solo_admin():
         return jsonify({'error': 'Acceso denegado'}), 403
     return jsonify({'mensaje': 'Bienvenido admin'})
   
-#ruta del registro
-@app.route('/registro',methods=['GET','POST'])
+@app.route('/registro', methods=['GET', 'POST'])
 def registro():
-    if request.method == 'POST':
+    if request.method == 'GET':
+        return render_template('registro.html')
+
+    try:
+        print('Headers:', request.headers)
         data = request.get_json()
+        print('JSON recibido:', data)
+
+        if not data:
+            return jsonify({'mensaje': 'No se recibieron datos JSON'}), 400
+
         nombre = data.get('nombre')
         apellido = data.get('apellido')
         celular = data.get('celular')
         correo = data.get('correo')
+        direccion = data.get('direccion')
         contrasena = data.get('contrasena')
-        direccion =data.get('direccion')
-        res = ModeloUsuario.registrar(db,nombre,apellido,celular,correo,direccion,contrasena)
-        if isinstance(res, int) and res > 0:
-            return jsonify({'mensaje': 'Usuario registrado exitosamente'})
-        elif res is None:
-            return jsonify({'mensaje': 'El usuario ya existe'})
-        elif isinstance(res, str) and res.startswith("Error al registrar"):
-            return jsonify({'mensaje': res})
-        else:
-            return jsonify({'mensaje': 'Error desconocido al registrar'})
 
-    return render_template('registro.html')
+        print(f"Datos recibidos: nombre={nombre}, apellido={apellido}, celular={celular}, correo={correo}, direccion={direccion}")
+
+        usuario_existente = ModeloUsuario.obtenerUsuarioPorDatos(db, nombre, apellido, celular, correo)
+        print('usuario_existente:', usuario_existente)
+
+        res = ModeloUsuario.registrar(db, nombre, apellido, celular, correo, direccion, contrasena)
+        print('Resultado de registrar:', res)
+
+        if isinstance(res, int):
+            return jsonify({'mensaje': 'Usuario registrado exitosamente'}), 200
+        elif isinstance(res, str) and res.startswith("Error"):
+            return jsonify({'mensaje': res}), 500
+        else:
+            return jsonify({'mensaje': 'Error desconocido al registrar'}), 500
+
+    except Exception as e:
+        print('Error en /registro:', e)
+        import traceback
+        traceback.print_exc()
+        return jsonify({'mensaje': f'Error interno del servidor: {e}'}), 500
 
 #ruta para obtener los usuarios
 @app.route('/api/usuarios', methods=['GET'])
@@ -282,19 +285,30 @@ def desbloquear_usuario(id_usuario):
 def registrar_producto():
     if 'usuario' not in session or session['usuario']['rol'] != 1:
         return jsonify({'error': 'Acceso denegado'}), 403
-    
 
     nombre = request.form.get('nombre')
     descripcion = request.form.get('descripcion')
-    precio = request.form.get('precio')
+    precio_raw = request.form.get('precio')
     imagen = request.files.get('imagen')
 
-    # Carpeta absoluta a static/img
+    print(f"NOMBRE: {nombre}")
+    print(f"DESCRIPCIÓN: {descripcion}")
+    print(f"PRECIO_RAW: {precio_raw}")
+    print(f"IMAGEN: {imagen.filename if imagen else 'No hay imagen'}")
+
+    if not nombre or not descripcion or not precio_raw:
+        return jsonify({'error': 'Todos los campos son obligatorios'}), 400
+
+    try:
+        precio = float(precio_raw)
+    except ValueError:
+        return jsonify({'error': 'El precio debe ser un número válido'}), 400
+
     ruta_carpeta = os.path.join(app.root_path, 'static', 'img')
-    os.makedirs(ruta_carpeta, exist_ok=True)  # Asegura que la carpeta existe
+    os.makedirs(ruta_carpeta, exist_ok=True)
 
     if imagen:
-        nombre_seguro = secure_filename(imagen.filename)  # Evita nombres peligrosos
+        nombre_seguro = secure_filename(imagen.filename)
         ruta_imagen = os.path.join(ruta_carpeta, nombre_seguro)
         imagen.save(ruta_imagen)
         nombre_imagen = nombre_seguro
@@ -303,20 +317,31 @@ def registrar_producto():
 
     respuesta = ProductoModelo.registrar_producto(db, nombre, descripcion, precio, nombre_imagen)
 
-    if respuesta is None:
-        return jsonify({'error': 'Error al registrar el producto'}), 500
+    if 'error' in respuesta:
+        return jsonify({'error': respuesta['error']}), 400
 
-    return jsonify({'mensaje': 'Producto registrado exitosamente'})
+    return jsonify({'mensaje': 'Producto registrado exitosamente', 'id': respuesta['id']}), 200
 
 
-#ruta para obtener los productos
-@app.route('/api/productos', methods=['GET'])
+
+@app.route('/api/productos')
 def obtener_productos():
-    try:
-        productos = ProductoModelo.obtener_productos(db)
-        return jsonify(productos)
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    cursor = db.connection.cursor()
+    cursor.execute("SELECT id_producto, nombre_producto, descripcion, precio_producto, imagen FROM producto")
+    resultados = cursor.fetchall()
+
+    productos = []
+    for fila in resultados:
+        productos.append({
+            "id_producto": fila[0],
+            "nombre_producto": fila[1],
+            "descripcion": fila[2],
+            "precio_producto": fila[3],
+            "imagen": fila[4]
+        })
+
+    return jsonify(productos)
+
     
 #ruta para obtener pedidos de usuario
 @app.route('/api/pedidos-usuario', methods=['GET'])
